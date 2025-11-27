@@ -1,0 +1,9 @@
+#taskList {
+  list-style-type: none;
+  padding: 0;             
+}
+
+li input[type="checkbox"]:checked + span {
+    text-decoration: line-through;
+    color: #888;
+}
