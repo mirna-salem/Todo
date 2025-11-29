@@ -23,6 +23,31 @@ namespace backend.controllers
             return CreatedAtAction(nameof(GetById), new { id = item.Id }, item);
         }
 
+        [HttpPut("{id}")]
+        public IActionResult UpdateTodo(int id, [FromBody] TodoItem updates)
+        {
+            var existingItem = todos.FirstOrDefault(t => t.Id == id);
+
+            Console.WriteLine(updates.IsCompleted);
+            
+            if (existingItem == null) 
+            {
+                return NotFound();
+            }
+
+            // Only update fields that are provided
+            if (updates.IsCompleted != null)
+            {
+                existingItem.IsCompleted = updates.IsCompleted;
+            } 
+            if (!string.IsNullOrEmpty(updates.Task)) 
+            {
+                existingItem.Task = updates.Task;
+            }
+
+            return Ok(existingItem);
+        }
+
         [HttpGet("{id}")]
         public ActionResult<TodoItem> GetById(int id)
         {

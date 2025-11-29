@@ -1,4 +1,4 @@
-import { getTodos, createTodo } from "./api.js";
+import { getTodos, createTodo, updateTodo } from "./api.js";
 
 const input = document.getElementById("taskInput");
 const button = document.getElementById("addButton");
@@ -65,4 +65,18 @@ function addTaskToDOM(todo) {
     li.appendChild(label);
 
     list.appendChild(li);
+
+    // Add event listerner for checkbox to handle completion status change
+    checkbox.addEventListener("change", async () => {
+        try 
+        {
+            const updatedTodo = await updateTodo(todo.id, { isCompleted: checkbox.checked });
+            todo.isCompleted = checkbox.checked;
+
+        } catch (err) 
+        {
+            console.error(err);
+            alert("Failed to update task");
+        }
+    });
 }
