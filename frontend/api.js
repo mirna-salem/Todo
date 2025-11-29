@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5068/api/todo";
+import { BASE_URL } from './config.js';
 
 export async function getTodos() {
     const res = await fetch(BASE_URL);
