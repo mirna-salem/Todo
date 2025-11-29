@@ -1,0 +1,18 @@
+const BASE_URL = "http://localhost:5068/api/todo";
+
+export async function getTodos() {
+    const res = await fetch(BASE_URL);
+    if (!res.ok) throw new Error("Failed to fetch todos");
+    return res.json();
+}
+
+export async function createTodo(todo) {
+  const res = await fetch(BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(todo)
+  });
+
+  if (!res.ok) throw new Error("Failed to create todo");
+  return res.json();
+}

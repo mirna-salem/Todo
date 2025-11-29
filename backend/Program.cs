@@ -2,9 +2,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
+
+// Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyHeader()
@@ -14,11 +16,16 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseCors();
+// Use CORS
+app.UseCors("AllowAll");
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseAuthorization();
 
-app.MapControllers();  // <-- Map all controller endpoints
+app.MapControllers();  // Map all controller endpoints
 
 app.Run();
