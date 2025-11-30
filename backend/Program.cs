@@ -1,7 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using backend.data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
+
+// Configure SQLite database
+builder.Services.AddDbContext<TodoDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") 
+        ?? "Data Source=todos.db"));
 
 // Configure CORS
 builder.Services.AddCors(options =>

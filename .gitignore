@@ -49,3 +49,8 @@ Thumbs.db
 .idea/
 *.iml
 
+# Database files
+*.db
+*.db-shm
+*.db-wal
+

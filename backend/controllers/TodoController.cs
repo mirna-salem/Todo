@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using backend.models;
+using backend.data;
 
 namespace backend.controllers
 {
@@ -7,51 +9,54 @@ namespace backend.controllers
     [Route("api/[controller]")]
     public class TodoController : ControllerBase
     {
-        private static List<TodoItem> todos = new List<TodoItem>();
-        private static int nextId = 1;
+        private readonly TodoDbContext _context;
+
+        public TodoController(TodoDbContext context)
+        {
+            _context = context;
+        }
 
         [HttpGet]
-        public IEnumerable<TodoItem> Get() => todos;
+        public async Task<ActionResult<IEnumerable<TodoItem>>> Get()
+        {
+            return await _context.TodoItems.ToListAsync();
+        }
 
         [HttpPost]
-        public ActionResult<TodoItem> Create(TodoItem item)
+        public async Task<ActionResult<TodoItem>> Create(TodoItem item)
         {
-            item.Id = nextId++;
-            
-            todos.Add(item);
+            _context.TodoItems.Add(item);
+            await _context.SaveChangesAsync();
             
             return CreatedAtAction(nameof(GetById), new { id = item.Id }, item);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTodo(int id, [FromBody] TodoItem updates)
+        public async Task<IActionResult> UpdateTodo(int id, [FromBody] TodoItem updates)
         {
-            var existingItem = todos.FirstOrDefault(t => t.Id == id);
-
-            Console.WriteLine(updates.IsCompleted);
+            var existingItem = await _context.TodoItems.FindAsync(id);
             
             if (existingItem == null) 
             {
                 return NotFound();
             }
 
-            // Only update fields that are provided
-            if (updates.IsCompleted != null)
-            {
-                existingItem.IsCompleted = updates.IsCompleted;
-            } 
+            // Update fields that are provided
             if (!string.IsNullOrEmpty(updates.Task)) 
             {
                 existingItem.Task = updates.Task;
             }
+            // Always update IsCompleted since bool can't be null
+            existingItem.IsCompleted = updates.IsCompleted;
 
+            await _context.SaveChangesAsync();
             return Ok(existingItem);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TodoItem> GetById(int id)
+        public async Task<ActionResult<TodoItem>> GetById(int id)
         {
-            var item = todos.FirstOrDefault(t => t.Id == id);
+            var item = await _context.TodoItems.FindAsync(id);
             
             if (item == null) 
             {
