@@ -1,4 +1,4 @@
-import { getTodos, createTodo, updateTodo } from "./api.js";
+import { getTodos, createTodo, updateTodo, deleteTodo } from "./api.js";
 
 const input = document.getElementById("taskInput");
 const button = document.getElementById("addButton");
@@ -61,8 +61,14 @@ function addTaskToDOM(todo) {
 
     label.appendChild(checkbox);
     label.appendChild(span);
-
+    
     li.appendChild(label);
+
+    // Create delete button (garbage can)
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "🗑"; // Unicode trash can icon
+    deleteBtn.classList.add("delete-btn");
+    li.appendChild(deleteBtn);
 
     list.appendChild(li);
 
@@ -70,13 +76,24 @@ function addTaskToDOM(todo) {
     checkbox.addEventListener("change", async () => {
         try 
         {
-            const updatedTodo = await updateTodo(todo.id, { isCompleted: checkbox.checked });
+            await updateTodo(todo.id, { isCompleted: checkbox.checked });
             todo.isCompleted = checkbox.checked;
 
         } catch (err) 
         {
             console.error(err);
             alert("Failed to update task");
+        }
+    });
+
+    // Event listener for delete button
+    deleteBtn.addEventListener("click", async () => {
+        try {
+            await deleteTodo(todo.id);
+            li.remove(); // remove from DOM
+        } catch (err) {
+            console.error(err);
+            alert("Failed to delete task");
         }
     });
 }

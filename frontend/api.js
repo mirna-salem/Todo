@@ -30,3 +30,13 @@ export async function updateTodo(id, updates) {
 
     return res.json();
 }
+
+export async function deleteTodo(id) {
+    const res = await fetch(`${BASE_URL}/${id}`, {
+        method: "DELETE"
+    });
+
+    if (!res.ok) {
+        throw new Error("Failed to delete todo");
+    }
+}

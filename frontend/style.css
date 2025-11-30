@@ -7,3 +7,17 @@ li input[type="checkbox"]:checked + span {
     text-decoration: line-through;
     color: #888;
 }
+
+.delete-btn {
+    background-color: transparent;
+    border: none;                
+    cursor: pointer;             
+    font-size: 1.2rem;            
+    color: red;           
+    margin-left: 10px;          
+    transition: transform 0.2s;   
+}
+
+.delete-btn:hover {
+    transform: scale(1.2);     
+}
