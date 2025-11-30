@@ -1,23 +1,70 @@
+/* Bootstrap-compatible styles */
 #todo-list {
   list-style-type: none;
   padding: 0;             
 }
 
-li input[type="checkbox"]:checked + span {
+/* Strikethrough for completed tasks */
+.todo-checkbox:checked ~ .todo-text {
     text-decoration: line-through;
     color: #888;
 }
 
+/* Alternative selector for better compatibility */
+.todo-item:has(.todo-checkbox:checked) .todo-text {
+    text-decoration: line-through;
+    color: #888;
+}
+
+/* Delete button styling */
 .delete-btn {
     background-color: transparent;
     border: none;                
     cursor: pointer;             
-    font-size: 1.2rem;            
-    color: red;           
-    margin-left: 10px;          
+    text-decoration: none;
     transition: transform 0.2s;   
 }
 
 .delete-btn:hover {
-    transform: scale(1.2);     
+    transform: scale(1.2);
+    opacity: 0.8;
+}
+
+/* Ensure form label positioning works with Bootstrap */
+.form-outline {
+    position: relative;
+}
+
+.form-label {
+    position: absolute;
+    top: 1rem;
+    left: 0.75rem;
+    transition: all 0.2s;
+    pointer-events: none;
+    color: #6c757d;
+    z-index: 1;
+    background-color: transparent;
+}
+
+/* Add padding to input so label doesn't overlap text */
+#taskInput.form-control-lg {
+    padding-top: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.form-control:focus ~ .form-label,
+.form-outline:focus-within .form-label {
+    top: 0.25rem;
+    left: 0.5rem;
+    font-size: 0.75rem;
+    color: #0d6efd;
+    background-color: white;
+    padding: 0 0.25rem;
+    z-index: 2;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
 }

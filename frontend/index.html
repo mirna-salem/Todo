@@ -2,34 +2,62 @@
 <html lang="en">
   <head>
     <title>My Todo List</title>
+    <!-- 
+      UI Design based on MDBootstrap To Do List component
+      Source: https://mdbootstrap.com/docs/standard/extended/to-do-list/
+      MDBootstrap: https://mdbootstrap.com/
+    -->
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div>
+    <section class="vh-100" style="background-color: #e2d5de;">
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col col-xl-10">
 
-      <h1>Todo List</h1>
+            <div class="card" style="border-radius: 15px;">
+              <div class="card-body p-5">
 
-      <hr>
+                <h6 class="mb-3">Todo List</h6>
 
-      <input id="taskInput" type="text" placeholder="Enter a task">
-      <button id="addButton">Add Task</button>
+                <form class="d-flex justify-content-center align-items-center mb-4">
+                  <div class="form-outline flex-fill">
+                    <input type="text" id="taskInput" class="form-control form-control-lg" />
+                    <label class="form-label" for="taskInput">What do you need to do today?</label>
+                  </div>
+                  <button type="button" id="addButton" class="btn btn-primary btn-lg ms-2">Add</button>
+                </form>
 
-      <!-- List of tasks -->
-      <ul id="todo-list">
-        <!-- Template for a task -->
-        <template id="todo-template">
-          <li class="todo-item">
-            <label>
-              <input type="checkbox" class="todo-checkbox">
-              <span class="todo-text"></span>
-            </label>
-            <button class="delete-btn">🗑</button>
-          </li>
-        </template>
-      </ul>
+                <!-- List of tasks -->
+                <ul id="todo-list" class="list-group mb-0">
+                  <!-- Template for a task -->
+                  <template id="todo-template">
+                    <li class="todo-item list-group-item d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2">
+                      <div class="d-flex align-items-center">
+                        <input class="form-check-input me-2 todo-checkbox" type="checkbox" value="" aria-label="..." />
+                        <span class="todo-text"></span>
+                      </div>
+                      <a href="#!" class="delete-btn" title="Remove item">
+                        <i class="fas fa-times text-primary"></i>
+                      </a>
+                    </li>
+                  </template>
+                </ul>
 
-    </div>
+              </div>
+            </div>
 
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Javascript file -->
     <script type="module" src="main.js"></script>
 
