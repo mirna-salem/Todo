@@ -15,7 +15,19 @@
       <button id="addButton">Add Task</button>
 
       <!-- List of tasks -->
-      <ul id="taskList"></ul>
+      <ul id="todo-list">
+        <!-- Template for a task -->
+        <template id="todo-template">
+          <li class="todo-item">
+            <label>
+              <input type="checkbox" class="todo-checkbox">
+              <span class="todo-text"></span>
+            </label>
+            <button class="delete-btn">🗑</button>
+          </li>
+        </template>
+      </ul>
+
     </div>
 
     <!-- Javascript file -->

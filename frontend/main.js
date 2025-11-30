@@ -2,98 +2,63 @@ import { getTodos, createTodo, updateTodo, deleteTodo } from "./api.js";
 
 const input = document.getElementById("taskInput");
 const button = document.getElementById("addButton");
-const list = document.getElementById("taskList");
+const list = document.getElementById("todo-list");
+const template = document.getElementById("todo-template");
 
-window.addEventListener("DOMContentLoaded", async () => {
+// Utility to handle async errors
+async function safeAsync(fn, errorMessage) {
     try {
-        const todos = await getTodos();
-        todos.forEach((todo) => {
-            addTaskToDOM(todo);
-        });
+        return await fn();
     } catch (err) {
         console.error(err);
+        alert(errorMessage);
     }
+}
+// Load todos on page load
+window.addEventListener("DOMContentLoaded", async () => {
+    const todos = await safeAsync(() => getTodos(), "Failed to load tasks") || [];
+    todos.forEach(addTaskToDOM);
 });
 
-button.addEventListener("click", () => {
-    handleAddTask();
-});
-
-input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        handleAddTask();
-    }
-});
-
+// Handle adding task
 async function handleAddTask() {
     const taskText = input.value.trim();
+    if (!taskText) return;
 
-    if (!taskText) {
-        return;
-    }
-
-    const newTodo = {
-        task: taskText,
-        isCompleted: false
-    };
-
-    try {
-        const savedTodo = await createTodo(newTodo);
+    const newTodo = { task: taskText, isCompleted: false };
+    const savedTodo = await safeAsync(() => createTodo(newTodo), "Failed to add task");
+    if (savedTodo) {
         addTaskToDOM(savedTodo);
         input.value = "";
-    } catch (err) {
-        console.error(err);
-        alert("Failed to add task");
     }
 }
 
+// Event listeners
+button.addEventListener("click", handleAddTask);
+input.addEventListener("keydown", (e) => e.key === "Enter" && handleAddTask());
+
+// DOM creation
 function addTaskToDOM(todo) {
-    const li = document.createElement("li");
+    const li = template.content.firstElementChild.cloneNode(true);
+    li.dataset.id = todo.id;
 
-    const label = document.createElement("label");
+    const checkbox = li.querySelector(".todo-checkbox");
+    const span = li.querySelector(".todo-text");
+    const deleteBtn = li.querySelector(".delete-btn");
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
     checkbox.checked = todo.isCompleted;
-
-    const span = document.createElement("span");
     span.textContent = todo.task;
 
-    label.appendChild(checkbox);
-    label.appendChild(span);
-    
-    li.appendChild(label);
+    // Event bindings
+    checkbox.addEventListener("change", async () => {
+        const updated = await safeAsync(() => updateTodo(todo.id, { isCompleted: checkbox.checked }), "Failed to update task");
+        if (updated) todo.isCompleted = checkbox.checked;
+    });
 
-    // Create delete button (garbage can)
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "🗑"; // Unicode trash can icon
-    deleteBtn.classList.add("delete-btn");
-    li.appendChild(deleteBtn);
+    deleteBtn.addEventListener("click", async () => {
+        const deleted = await safeAsync(() => deleteTodo(todo.id), "Failed to delete task");
+        if (deleted !== undefined) li.remove();
+    });
 
     list.appendChild(li);
-
-    // Add event listerner for checkbox to handle completion status change
-    checkbox.addEventListener("change", async () => {
-        try 
-        {
-            await updateTodo(todo.id, { isCompleted: checkbox.checked });
-            todo.isCompleted = checkbox.checked;
-
-        } catch (err) 
-        {
-            console.error(err);
-            alert("Failed to update task");
-        }
-    });
-
-    // Event listener for delete button
-    deleteBtn.addEventListener("click", async () => {
-        try {
-            await deleteTodo(todo.id);
-            li.remove(); // remove from DOM
-        } catch (err) {
-            console.error(err);
-            alert("Failed to delete task");
-        }
-    });
 }
