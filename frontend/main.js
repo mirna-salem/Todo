@@ -52,7 +52,15 @@ function addTaskToDOM(todo) {
     // Event bindings
     checkbox.addEventListener("change", async () => {
         const updated = await safeAsync(() => updateTodo(todo.id, { isCompleted: checkbox.checked }), "Failed to update task");
-        if (updated) todo.isCompleted = checkbox.checked;
+        if (updated) {
+            todo.isCompleted = checkbox.checked;
+            // Move completed tasks to end, uncompleted to start
+            if (checkbox.checked) {
+                list.appendChild(li);
+            } else {
+                list.prepend(li);
+            }
+        }
     });
 
     deleteBtn.addEventListener("click", async () => {
@@ -60,5 +68,9 @@ function addTaskToDOM(todo) {
         if (deleted !== undefined) li.remove();
     });
 
-    list.appendChild(li);
+    // Add to DOM: completed tasks go to end, new tasks go to start
+    if (todo.isCompleted)
+        list.appendChild(li);
+    else
+        list.prepend(li);
 }
